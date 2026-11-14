@@ -26,8 +26,8 @@ class Orders(Base):
     __tablename__ = "orders"
     id: Mapped[int] = mapped_column(primary_key=True)
     order_number: Mapped[str] = mapped_column(String(50), unique=True)
-    customer_number: Mapped[int]
-    shipping_status: Mapped[int]
+    customer_phone: Mapped[str] = mapped_column(String(30))
+    shipping_status: Mapped[str]
 
 class Conversation(Base):
     __tablename__ = "conversation"
@@ -42,3 +42,10 @@ class Messages(Base):
     role: Mapped[str]
     text: Mapped[str] = mapped_column(String(200))
     created_at: Mapped[datetime] = mapped_column(default=utcnow)
+
+class OrderItem(Base):
+    __tablename__ = "order_items"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    order_id: Mapped[int] = mapped_column(ForeignKey("orders.id"))
+    book_id: Mapped[int] = mapped_column(ForeignKey("books.id"))
+    quantity: Mapped[int] = mapped_column(default=1)
