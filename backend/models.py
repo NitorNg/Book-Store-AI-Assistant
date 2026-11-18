@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from sqlalchemy import ForeignKey, String, Text
+from sqlalchemy import ForeignKey, String, Text, Boolean
 from sqlalchemy.orm import Mapped, mapped_column
 from database import Base
 
@@ -49,3 +49,9 @@ class OrderItem(Base):
     order_id: Mapped[int] = mapped_column(ForeignKey("orders.id"))
     book_id: Mapped[int] = mapped_column(ForeignKey("books.id"))
     quantity: Mapped[int] = mapped_column(default=1)
+
+class User(Base):
+    __tablename__ = "users"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    is_guest: Mapped[bool] = mapped_column(Boolean, default=True)
+    created_at: Mapped[datetime] = mapped_column(default=utcnow)
