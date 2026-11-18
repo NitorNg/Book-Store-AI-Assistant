@@ -17,5 +17,4 @@ class ChatRequest(BaseModel):
 
 @app.post('/chat')
 def sendMessage(req: ChatRequest):
-        return {"Reply" : ask_llm(req.message)}
-
+    return {"Reply": ask_llm(req.message)}

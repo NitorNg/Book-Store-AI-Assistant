@@ -40,7 +40,7 @@ class Messages(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     conversation_id: Mapped[int] = mapped_column(ForeignKey("conversation.id"))
     role: Mapped[str]
-    text: Mapped[str] = mapped_column(String(200))
+    text: Mapped[str] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(default=utcnow)
 
 class OrderItem(Base):
