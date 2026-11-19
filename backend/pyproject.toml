@@ -9,6 +9,7 @@ dependencies = [
     "groq>=1.7.0",
     "python-dotenv>=1.2.4",
     "sqlalchemy>=2.1.8",
+    "pydantic[email]>=2.14.3",
 ]
 
 [dependency-groups]
