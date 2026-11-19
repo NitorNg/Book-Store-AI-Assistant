@@ -5,10 +5,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from models import Conversation, Messages
 from database import get_db, Base, engine
+from authentication import router as auth_router 
 
 Base.metadata.create_all(bind=engine)
 
+
 app = FastAPI()
+app.include_router(auth_router) 
 
 app.add_middleware(
     CORSMiddleware,

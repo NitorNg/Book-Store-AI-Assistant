@@ -3,10 +3,10 @@ name = "backend-python"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
+    "casdoor>=1.43.3",
     "fastapi[standard]>=0.162.5",
-    "google-genai>=3.3.0",
-    "groq>=1.7.0",
     "openai>=3.55.1",
+    "groq>=1.7.0",
     "python-dotenv>=1.2.4",
     "sqlalchemy>=2.1.8",
 ]
