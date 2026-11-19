@@ -1,11 +1,14 @@
 import os 
 from dotenv import load_dotenv
-from google import genai
+from groq import Groq
 
 load_dotenv()
-client = genai.Client()
+client = Groq()
 MODEL = os.getenv("LLM_MODEL")
 
-def ask_llm(message: str) -> str:
-    response = client.models.generate_content(model=MODEL, contents=message)
-    return response.text
+def ask_llm(message: str, history) -> str:
+    messages = history + [{"role": "user", "content": message}]
+    completion = client.chat.completions.create(
+    model=MODEL,
+    messages=messages)
+    return completion.choices[0].message.content

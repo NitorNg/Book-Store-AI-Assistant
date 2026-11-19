@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+import uuid
 from sqlalchemy import ForeignKey, String, Text, Boolean
 from sqlalchemy.orm import Mapped, mapped_column
 from database import Base
@@ -32,6 +33,7 @@ class Orders(Base):
 class Conversation(Base):
     __tablename__ = "conversation"
     id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(String(36), ForeignKey("users.id"), nullable=True)
     created_at: Mapped[datetime] = mapped_column(default=utcnow)
     need_human: Mapped[bool] = mapped_column(default=False)
 

@@ -6,7 +6,8 @@ import { IoIosSend } from "react-icons/io";
 function App() {
   const [message, setMessage] = useState("");
   const [messageList, setMessageList] = useState([{}])
-
+  const [conversationId, setConversationId] = useState()
+  
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -30,7 +31,7 @@ function App() {
       const data = await res.json();
       console.log(data);
 
-      setMessageList((prev) => [...prev, { role: "bot", text: data.Reply }]);
+      setMessageList((prev) => [...prev, { role: "bot", text: data.reply }]);
     } catch (error) {
       console.error(error);
       setMessageList((prev) => [
