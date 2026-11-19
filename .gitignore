@@ -1,5 +1,6 @@
 .env
 *.db
 .venv/
+casdoor_cert.pem
 node_modules/
 __pycache__/
