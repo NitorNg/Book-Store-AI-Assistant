@@ -2,7 +2,7 @@ from casdoor import User
  
 from .config import sdk
  
-# summary: This file is for managing user, get user from the database.  
+# summary: This file is for managing user, get user from the casdoor's database.  
 def username_taken(username: str) -> bool:
     """True if a user with this username already exists in our Casdoor organization."""
     try:
@@ -21,8 +21,9 @@ def find_username(email: str) -> str | None:
     except Exception:
         return None
  
- 
-def create_user(username: str, email: str, password: str) -> None:
+# After create user in casdoor, return the casdoor user's id.
+# We need the casdoor user's id inorder to create fastapi user.
+def create_user(username: str, email: str, password: str) -> str:
     """Create a user in Casdoor. Raises an Exception if Casdoor rejects it."""
     user = User()
     user.owner = sdk.org_name
@@ -32,6 +33,7 @@ def create_user(username: str, email: str, password: str) -> None:
     user.displayName = username
     user.signupApplication = sdk.application_name
     sdk.add_user(user)
+    return sdk.get_user(username).id
  
  
 def get_token(username: str, password: str) -> dict:
@@ -42,4 +44,10 @@ def get_token(username: str, password: str) -> dict:
 def verify_token(token: str) -> dict:
     """Check the token's signature and return its claims. Raises if invalid or expired."""
     return sdk.parse_jwt_token(token)
+
+def delete_user(username: str) -> None:
+    """Remove a user from Casdoor (used to undo a half-finished registration)."""
+    user = sdk.get_user(username)
+    if user and user.name == username:
+        sdk.delete_user(user)
  
