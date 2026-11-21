@@ -55,5 +55,7 @@ class OrderItem(Base):
 class User(Base):
     __tablename__ = "users"
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    is_guest: Mapped[bool] = mapped_column(Boolean, default=True)
+    casdoor_id: Mapped[str] = mapped_column(String(36), unique=True, index=True, nullable=False)
+    username: Mapped[str] = mapped_column(String(30), nullable=False)
+    email: Mapped[str] = mapped_column(String(255), unique=True, nullable=True)
     created_at: Mapped[datetime] = mapped_column(default=utcnow)
