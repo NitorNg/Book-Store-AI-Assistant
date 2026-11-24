@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from models import Conversation, Messages
 from database import get_db, Base, engine
-from authentication import router as auth_router 
+from authentication import router as auth_router, current_user
 
 Base.metadata.create_all(bind=engine)
 
@@ -25,16 +25,25 @@ class ChatRequest(BaseModel):
     conversation_id: int | None = None
 
 @app.post('/chat')
-def sendMessage(req: ChatRequest, db: Session = Depends(get_db)):
+def sendMessage(
+     req: ChatRequest,
+     db: Session = Depends(get_db),
+     user: dict = Depends(current_user)):
+    
+    user_id = user["sub"]
+    print(user_id)
+
     if req.conversation_id is None:
-        conv = Conversation()
+        conv = Conversation(user_id = user_id)
         db.add(conv)
         db.commit()
         db.refresh(conv)
     else:
         conv = (
         db.query(Conversation)
-        .filter(Conversation.id == req.conversation_id)
+        .filter(
+            Conversation.id == req.conversation_id,
+            Conversation.user_id == user_id)
         .first()
         )
         if conv == None:
@@ -42,14 +51,15 @@ def sendMessage(req: ChatRequest, db: Session = Depends(get_db)):
     
     messages_rows = db.query(Messages).filter(Messages.conversation_id == conv.id).order_by(Messages.created_at).all()
 
-    history = [{"role": m.role, "content": m.text, "created_at": m.created_at} for m in messages_rows[-10:]]
+    print(messages_rows)
+    history = [{"role": m.role, "content": m.text} for m in messages_rows[-10:]]
     history.append({"role": "user", "content": req.message  })
 
     print(history)
     reply = ask_llm(req.message, history)
 
     db.add(Messages(conversation_id= conv.id, role="user", text = req.message))
-    db.add(Messages(conversation_id = conv.id, role = "bot", text = reply))
+    db.add(Messages(conversation_id = conv.id, role = "assistant", text = reply))
     db.commit()
 
     return {"conversation_id": conv.id, "reply": reply}

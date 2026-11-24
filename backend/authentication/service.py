@@ -18,7 +18,8 @@ def find_username(email: str) -> str | None:
     try:
         user = sdk.get_user_by_email(email)
         return user.name or None
-    except Exception:
+    except Exception as e:
+        print("find_username failed:", repr(e))
         return None
  
 # After create user in casdoor, return the casdoor user's id.

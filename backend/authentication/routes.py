@@ -47,10 +47,12 @@ def register(body: RegisterIn, db: Session = Depends(get_db)):
 @router.post("/login", response_model=TokenOut)
 def login(body: LoginIn):
     username = service.find_username(body.email)
+    print("username found:", username)
     if not username:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid email or password")
  
     token = service.get_token(username, body.password)
+    print("token response:", token)
     if "access_token" not in token:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid email or password")
  
@@ -58,7 +60,7 @@ def login(body: LoginIn):
         access_token=token["access_token"],
         refresh_token=token.get("refresh_token"),
     )
- 
+
  
 @router.get("/me")
 def me(user: dict = Depends(current_user)):
