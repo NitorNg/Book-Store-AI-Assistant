@@ -1,7 +1,6 @@
 
 """The /auth endpoints: register, login, me."""
 from fastapi import APIRouter, Depends, HTTPException, status
- 
 from . import service
 from .dependencies import current_user
 from .schemas import LoginIn, RegisterIn, TokenOut
