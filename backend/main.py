@@ -9,7 +9,6 @@ from authentication import router as auth_router, current_user
 
 Base.metadata.create_all(bind=engine)
 
-
 app = FastAPI()
 app.include_router(auth_router) 
 
@@ -23,6 +22,18 @@ app.add_middleware(
 class ChatRequest(BaseModel):
     message: str
     conversation_id: int | None = None
+
+@app.get("/conversations") 
+def getConversationRows(db : Session = Depends(get_db), user: dict = Depends(current_user) ):
+     user_id = user["sub"]
+     conversation_rows = db.query(Conversation).filter(Conversation.user_id == user_id).all()
+     return {"conversations": conversation_rows}
+
+@app.get("/messages/{conversation_id}")
+def getMessagesRows(conversation_id, db: Session = Depends(get_db), user : dict = Depends(current_user)) :
+     user_id = user["sub"]
+     messages_rows = db.query(Messages).filter(Messages.conversation_id == conversation_id).all()
+     return {"messages": messages_rows}
 
 @app.post('/chat')
 def sendMessage(
